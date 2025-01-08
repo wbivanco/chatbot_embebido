@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web con Chat Autónomo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .chat-container {
+            position: fixed;
+            bottom: 0;
+            right: 20px;
+            width: 300px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+        .chat-body {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: white;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .chat-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bienvenido a nuestra página web</h1>
+    <p>Explora nuestra información y al final de la página encontrarás un chat para resolver tus dudas.</p>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            Chat Autónomo
+        </div>
+        <div class="chat-body" id="chatBody">
+            <!-- Aquí se mostrarán los mensajes del chat -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Escribe tu pregunta...">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        let conversationHistory = [];
+
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            const chatBody = document.getElementById('chatBody');
+
+            if (userInput.trim() === '') return;
+
+            // Mostrar el mensaje del usuario en el chat
+            chatBody.innerHTML += `<p><strong>Tú:</strong> ${userInput}</p>`;
+            document.getElementById('userInput').value = '';
+
+            // Llamada al backend para obtener respuesta
+            const response = await getBotResponse(userInput);
+            chatBody.innerHTML += `<p><strong>Chat:</strong> ${response.bot_response}</p>`;
+
+            // Hacer scroll hacia abajo
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        async function getBotResponse(userMessage) {
+            const response = await fetch('http://localhost:8000/chatbot/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_message: userMessage,
+                    history: conversationHistory
+                })
+            });
+
+            const data = await response.json();
+            
+            // Actualizar el historial de conversación
+            conversationHistory = data.history;
+
+            return data;
+        }
+    </script>
+
+</body>
+</html>

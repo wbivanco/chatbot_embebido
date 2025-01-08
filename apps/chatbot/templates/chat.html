@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block estilo %}
+<link rel="stylesheet" href="/chatbot_static/css/styles.css"> 
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <p>Consulta la documentación de GDE usando el chatbot.</p>
+    <form method="POST" action="/chatbot/">
+        <input type="text" name="user_message" placeholder="Escribe una pregunta..." required>
+        <button type="submit">Consultar</button>
+    </form>
+    <div id="response-container">
+        {% if bot_response %}
+        <p><strong>Respuesta:</strong> {{ bot_response }}</p>
+        {% endif %}
+
+        {% if sources %}
+        <h4>Fuentes:</h4>
+        <ul>
+            {% for source in sources %}
+            <li>
+                <strong>{{ source.source }}</strong> - 
+                {% if source.url %}
+                <a href="{{ source.url }}" target="_blank">{{ source.url }}</a>
+                {% endif %}
+                <p>{{ source.snippet }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if history %}
+        <h4>Historial de la conversación:</h4>
+        <ul>
+            {% for entry in history %}
+            <li>
+                <p><strong>Usuario:</strong> {{ entry.user }}</p>
+                <p><strong>Asistente:</strong> {{ entry.assistant }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

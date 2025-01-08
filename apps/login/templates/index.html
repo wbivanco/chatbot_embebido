@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bienvenido</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <h1>Bienvenido, {{ request.session.username }}!</h1>
+  <a href="/backoffice/logout">Salir</a>
+  <br>
+  <a href="/backoffice">Ir al Panel de control</a>
+</body>
+</html>

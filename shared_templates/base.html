@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/backoffice_static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block estilo %}{% endblock %}
+    
+    <title>Panel de Control</title>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="/embedded_chatbot/show_chatbot" target="_blank"><i class="fas fa-comments"></i> Chat Embebido</a></li>
+                    <li>
+                        <a href="/files/list_files"><i class="fas fa-folder"></i> Administrar Archivos</a>
+                    </li>
+                    <li><a href="/backoffice/logout"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
