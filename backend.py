@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from base.load_env import load_env
+from apps.chatbot.routes import router as chatbot_router
 from apps.file_management.routes import router as file_management_router
 from apps.embedded_chat.routes import router as embedded_chatbot_router
 from apps.login.routes import router as login_router
@@ -39,6 +40,7 @@ app.add_middleware(
 )
 
 # Incluir routers
+app.include_router(chatbot_router, prefix="/chatbot", tags=["Chatbot"])
 app.include_router(file_management_router, prefix="/files", tags=["File Management"])
 app.include_router(embedded_chatbot_router, prefix="/embedded_chatbot", tags=["Embedded Chatbot"])
 app.include_router(login_router, prefix="/auth", tags=["Login"])
