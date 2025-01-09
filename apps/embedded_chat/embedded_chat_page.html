@@ -99,19 +99,21 @@
         }
 
         async function getBotResponse(userMessage) {
-            const response = await fetch('http://localhost:8000/chatbot/', {
+            // Crear un objeto FormData
+            const formData = new FormData();
+            formData.append('user_message', userMessage); // Agregar el mensaje del usuario
+
+            const response = await fetch('http://localhost:8000/chatbot/embeded', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    user_message: userMessage,
-                    history: conversationHistory
-                })
+                body: formData, // Enviar el formulario
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
-            
+
             // Actualizar el historial de conversación
             conversationHistory = data.history;
 

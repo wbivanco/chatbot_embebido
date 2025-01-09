@@ -102,3 +102,36 @@ async def chat_with_bot(request: Request, user_message: str = Form(...)):
         })
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/embeded", response_model=dict)
+async def chat_with_bot_embeded(request: Request, user_message: str = Form(...)):
+    """
+    Procesa el mensaje del usuario y devuelve la respuesta del chatbot embebido. Esta función es casi igual a la chat_with_bot,
+    solo difiere en la respuesta para que funciones correctamente.
+    """
+    try:
+        # Obtener el historial actual de la sesión, si existe
+        session_history = request.session.get("history", [])
+        
+        # Inicializar LLM y otros componentes necesarios
+        llm_manager = LlmManager("openai")
+        llm = llm_manager.initialice_llm_model(api_key=api_key, model_name="gpt-3.5-turbo")
+        manager = EmbeddingsManager("openai", api_key, persist_directory)
+        stored_embeddings = manager.get_embeddings()
+        QA_chain = llm_manager.initialice_retriever(llm, stored_embeddings)
+        
+        # Obtener la respuesta del chatbot
+        bot_response, sources = llm_manager.get_response_retriever(QA_chain, user_message, session_history)
+        
+        # Actualizar historial de la sesión
+        session_history.append({"user": user_message, "assistant": bot_response})
+        request.session["history"] = session_history
+        
+        # Preparar respuesta
+        return {
+            "bot_response": bot_response,
+            "sources": sources,
+            "history": session_history,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
